@@ -1,0 +1,172 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #6d7e93;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#homelyLogo {
+    width: 60%;
+    max-width: 200px;
+    margin-right: 5px;
+    min-height: 130px;
+}
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chartContainer {
+    min-height: 400px;
+}
+
+.label-value-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Input Type Styles */
+label {
+    display: block;
+    margin-bottom: 5px;
+    max-width: 70%;
+}
+
+.informationLabel {
+    display: block;
+    margin-bottom: 5px;
+    color: #777;
+    max-width: 65%;
+}
+
+/* Value Indicator Styles */
+.value-indicator{
+    text-align: right;
+    align-items: bottom;
+    margin-bottom: 5px;
+    color: #777;
+    max-width: 29%;
+}
+
+.informationValue {
+    text-align: right;
+    align-items: bottom;
+    margin-bottom: 5px;
+    margin-left: 15px;
+    max-width: 35%;
+}
+
+.column {
+    float: left;
+    width: 30vw;
+    height: 100vw;
+}
+
+.block-container {
+    max-width: 100%;
+    margin: 10px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.22);
+}
+
+.group-container {
+    margin-bottom: 20px;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.group {
+    margin-bottom: 40px;
+}
+
+/* Slider Styles */
+input[type='range'] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #ddd;
+    outline: none;
+    margin-top: 5px;
+}
+
+input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #396;
+    cursor: pointer;
+}
+
+input[type='range']::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #396;
+    cursor: pointer;
+}
+
+input[type='range']::-ms-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #396;
+    cursor: pointer;
+}
+
+
+.group h3 {
+    margin-bottom: 10px;
+    color: #444;
+}
+
+
+input[type='range'] {
+    width: 100%;
+}
+
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Button Styles */
+button {
+    background-color: #396;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: rgb(18, 91, 54);
+}
+
