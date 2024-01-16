@@ -16,11 +16,19 @@ body {
 }
 
 #homelyLogo {
-    width: 60%;
-    max-width: 200px;
+    width: 70%;
     margin-right: 5px;
-    min-height: 130px;
+    min-height: 60px;
 }
+
+#HomelyLogoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 25%;
+    min-height: 50px;
+}
+
 .center {
     display: flex;
     justify-content: center;
