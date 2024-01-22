@@ -3,9 +3,41 @@ body {
     font-family: Arial, sans-serif;
     background-color: #6d7e93;
     color: #333;
+    width: 100vw;
 }
 
 
+.flexblock {
+    column-count: 3;
+    width: 85%;
+}
+
+.block-container {
+    margin: 10px;
+    width: 86%;
+    display: inline-block;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Styles for screens smaller than 600px */
+@media only screen and (max-width: 900px) {
+    .block-container {
+        width: 100%;
+    }
+    .flexblock {
+        column-count: 1;
+    }
+}
+.block-background {
+    
+    width: 100%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.22);
+    
+}
 
 .logo-container {
     display: flex;
@@ -15,7 +47,6 @@ body {
 
 #homelyLogo {
     width: 70%;
-    margin-right: 5px;
     min-height: 60px;
 }
 
@@ -72,36 +103,6 @@ label {
     margin-bottom: 5px;
     margin-left: 15px;
     max-width: 35%;
-}
-
-.flexblock {
-    display: flex;
-    height: 97vh;
-    width: 97vw;
-    overflow: scroll;
-    flex-grow: 1;
-    flex-wrap: wrap;
-    flex-direction: column;
-    padding: 5px;
-    justify-content: stretch;
-}
-
-.block-container {
-    min-width: 300px;
-    max-width: 40%;
-    display: flex;
-    margin: 0px;
-    padding: 10px;
-}
-
-.block-background {
-    
-    width: 100%;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.22);
-    
 }
 
 .group-container {
