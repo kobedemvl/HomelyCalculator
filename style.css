@@ -88,6 +88,7 @@ label {
 
 .block-container {
     min-width: 300px;
+    max-width: 40%;
     display: flex;
     margin: 0px;
     padding: 10px;
