@@ -71,8 +71,8 @@ export function createPricipalInterestOptions(principalLeft, interestPaid) {
         xaxis: {
             tickAmount: 10,
             categories: [...Array(120).keys()].map(month => {
-                const year = Math.floor(month * 4 / 12) + 1;
-                const monthName = new Date(2000, month * 4 % 12, 1).toLocaleString('default', { month: 'short' });
+                const year = Math.floor(month * 3 / 12);
+                const monthName = new Date(2000, month * 3 % 12, 1).toLocaleString('default', { month: 'short' });
                 return `Y${year} ${monthName}`;
             })
         },
@@ -103,9 +103,6 @@ export function createHouseValueOptions(houseValue, buyerStakeValue, homelyStake
         series: [{
             name: 'House Value',
             data: houseValue,
-            dataLabels: {
-                enabled: false
-            }
         },
         {
             name: 'Buyer Stake Value',
@@ -119,15 +116,16 @@ export function createHouseValueOptions(houseValue, buyerStakeValue, homelyStake
             data: homelyStakeValue,
             dataLabels: {
                 enabled: false
-            }
+            },
+            color: '#339966'
         },
         ],
 
         xaxis: {
             tickAmount: 10,
             categories: [...Array(40).keys()].map(month => {
-                const year = Math.floor(month * 4 / 12) + 1;
-                const monthName = new Date(2000, month * 4 % 12, 1).toLocaleString('default', { month: 'short' });
+                const year = Math.floor(month * 3 / 12);
+                const monthName = new Date(2000, month * 3 % 12, 1).toLocaleString('default', { month: 'short' });
                 return `Y${year} ${monthName}`;
             })
         },
@@ -142,26 +140,29 @@ export function createHouseValueOptions(houseValue, buyerStakeValue, homelyStake
     }
 }
 
-export function createHouseValueEquity(homelyStakeValue, buyerStakeValue, principalLeft, interestLeft) {
+export function createHouseValueEquity(homelyStakeValue, buyerStakeValue, principalLeft) {
     return {
         chart: {
             type: 'line',
             stacked: true,
             fill: {
                 opacity: 0.5
-            },
-            dataLabels: {
-                enabled: false,
-            },
-        
+            },        
             height: 300,
+            dataLabels: {   
+                enabled: true, 
+                formatter: function (val) {
+                    return val.toFixed(0);
+                }
+            }
 
         },
         series: [{
             name: 'Homely',
             data: homelyStakeValue,
+            color: '#339966',
             dataLabels: {
-                enabled: false
+                enabled: true,
             }
         },
         {
@@ -177,21 +178,13 @@ export function createHouseValueEquity(homelyStakeValue, buyerStakeValue, princi
             dataLabels: {
                 enabled: false
             }
-        },
-        {
-            name: 'Interest',
-            data: interestLeft,
-            dataLabels: {
-                enabled: false
-            }
-        },
-        ],
+        }],
 
         xaxis: {
             tickAmount: 10,
             categories: [...Array(120).keys()].map(month => {
-                const year = Math.floor(month * 4 / 12) + 1;
-                const monthName = new Date(2000, month * 4 % 12, 1).toLocaleString('default', { month: 'short' });
+                const year = Math.floor(month * 3 / 12);
+                const monthName = new Date(2000, month * 3 % 12, 1).toLocaleString('default', { month: 'short' });
                 return `Y${year} ${monthName}`;
             })
         },

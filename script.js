@@ -6,21 +6,21 @@ import { calculateMonthlyPayments, calculateTotalInterest, calculatePrincipalInt
 document.addEventListener('DOMContentLoaded', () => {
 
     function gatherInputValues() {
+        const yearlyAppreciationRate = 0.041;
         const houseDetails = {
             purchasePrice: parseFloat(document.getElementById('purchasePrice').value),
-            sellingPrice: parseFloat(document.getElementById('sellingPrice').value)
+            sellingPrice: parseFloat(document.getElementById('purchasePrice').value)*(1+yearlyAppreciationRate)**(parseFloat(document.getElementById('buyoutDuration').value)),
         };
 
         const loanDetails = {
             buyerDownPayment: parseFloat(document.getElementById('buyerDownPayment').value),
-            interestRate: parseFloat(document.getElementById('interestRate').value) / 100, // Convert to decimal
+            interestRate: 3.35/100,
             loanDuration: parseFloat(document.getElementById('loanDuration').value),
-            notaryCosts: parseFloat(document.getElementById('notaryCosts').value)
         };
 
         const homelyDetails = {
-            homelyDownPayment: parseFloat(document.getElementById('homelyDownPayment').value),
-            leverage: parseFloat(document.getElementById('leverage').value),
+            homelyDownPayment: Math.max(0, 0.2*houseDetails.purchasePrice - loanDetails.buyerDownPayment),
+            leverage: 1.25,
             buyoutDuration: parseFloat(document.getElementById('buyoutDuration').value)
         };
 
@@ -52,24 +52,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('totalInterestUntilBuyout').textContent = '€ ' + totalInterestUntilBuyout.toFixed(0); // Assuming this is the same as totalInterest for now
 
         document.getElementById('purchasePriceValue').textContent = '€ ' + inputValues.purchasePrice
-        document.getElementById('sellingPriceValue').textContent = '€ ' + inputValues.sellingPrice
+        document.getElementById('sellingPriceValue').textContent = '€ ' + inputValues.sellingPrice.toFixed(0)
         document.getElementById('buyoutDurationValue').textContent = inputValues.buyoutDuration + ' years'
         document.getElementById('buyerDownPaymentValue').textContent = '€ ' + inputValues.buyerDownPayment
         document.getElementById('interestRateValue').textContent = (inputValues.interestRate * 100).toFixed(2) + `%`
         document.getElementById('loanDurationValue').textContent = inputValues.loanDuration + ' years'
-        document.getElementById('notaryCostsValue').textContent = '€ ' + inputValues.notaryCosts
         document.getElementById('homelyDownPaymentValue').textContent = '€ ' + inputValues.homelyDownPayment
-        document.getElementById('leverageValue').textContent = inputValues.leverage
     }
 
     let chartPrincipalInterest;  // Declare a global variable to hold the chart instance
     function updateGraphPricipalInterest(inputValues) {
         const principalInterestMonthly = calculatePrincipalInterestMonthly(inputValues);
         const principalLeft = principalInterestMonthly
-            .filter((_, index) => index % 4 === 0)
+            .filter((_, index) => index % 3 === 0)
             .map(month => month.principalLeft);
         const interestPaid = principalInterestMonthly
-            .filter((_, index) => index % 4 === 0)
+            .filter((_, index) => index % 3 === 0)
             .map(month => month.totalInterestPaid);
 
         let options = createPricipalInterestOptions(principalLeft, interestPaid);
@@ -95,14 +93,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let chartHouseValue;  // Declare a global variable to hold the chart instance
     function updateGraphsHouseValue(inputValues) {
+
         // updates the graph with house value
         const houseValue = []
-        const QuarterlyAppreciationRate = (inputValues.sellingPrice / inputValues.purchasePrice) ** (1 / inputValues.buyoutDuration / 3) - 1;
-        for (let i = 0; i < inputValues.buyoutDuration * 3; i++) {
+        const QuarterlyAppreciationRate = (inputValues.sellingPrice / inputValues.purchasePrice) ** (1 / inputValues.buyoutDuration / 4) - 1;
+        for (let i = 0; i < inputValues.buyoutDuration * 4; i++) {
             houseValue.push(inputValues.purchasePrice * (1 + QuarterlyAppreciationRate) ** (i));
         }
         houseValue.push(inputValues.sellingPrice);
-        const homelyStakeValue = houseValue.map(value => ((value / inputValues.purchasePrice - 1) * inputValues.leverage + 1) * inputValues.homelyDownPayment);
+
+
+        const homelyStakeValue = houseValue.map(value => ((value / inputValues.purchasePrice* inputValues.homelyDownPayment)*inputValues.leverage));
         const buyerStakeValue = houseValue.map(value => value - homelyStakeValue[houseValue.indexOf(value)]);
 
         // Apex Charts for house value and homely stake value
@@ -122,7 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             {
                 name: 'Homely Stake Value',
-                data: homelyStakeValue
+                data: homelyStakeValue,
+                color: '#339966'
             },
             ]);
         } else {
@@ -134,56 +136,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let chartHouseEquity;  // Declare a global variable to hold the chart instance
     function updateGraphsHouseEquity(inputValues) {
+        // constants
+        const N_quarters = inputValues.loanDuration * 4;
+
+        const houseValue = []
+        const QuarterlyAppreciationRate = (inputValues.sellingPrice / inputValues.purchasePrice) ** (1 / inputValues.buyoutDuration / 4) - 1;
+        for (let i = 0; i < N_quarters; i++) {
+            houseValue.push(inputValues.purchasePrice * (1 + QuarterlyAppreciationRate) ** (i));
+        }
+
         // updates the graph with house value
         const principalInterestMonthly = calculatePrincipalInterestMonthly(inputValues);
         const principalLeft = principalInterestMonthly
-            .filter((_, index) => index % 4 === 0)
-            .map(month => month.principalLeft);
-        const interestPaid = principalInterestMonthly
-            .filter((_, index) => index % 4 === 0)
-            .map(month => month.totalInterestPaid);
+            .filter((_, index) => index % 3 == 0)
+            .map(month => month.principalLeft).slice(0, N_quarters);
 
-        const totalInterest = interestPaid[interestPaid.length - 1];
-        const interestLeft = interestPaid.map(value => totalInterest - value);
-
-        const houseValue = [];
-        const QuarterlyAppreciationRate = (inputValues.sellingPrice / inputValues.purchasePrice) ** (1 / inputValues.buyoutDuration / 3) - 1;
-        for (let i = 0; i < inputValues.buyoutDuration * 3; i++) {
-            houseValue.push(inputValues.purchasePrice * (1 + QuarterlyAppreciationRate) ** (i));
-        }
-        houseValue.push(inputValues.sellingPrice);
-
-        // Append 0's to principalLeft and interestLeft if they are shorter than houseValue
-        const N = houseValue.length;
-        while (principalLeft.length < N) {
-            principalLeft.push(0);
-        }
-        while (interestLeft.length < N) {
-            interestLeft.push(0);
-        }
 
         const homelyStakeValue = houseValue.map((value, index) => {
-            if (index > inputValues.holdingPeriod * 3) {
+            if (index > inputValues.buyoutDuration * 4) {
                 return 0;
             }
-            return ((value / inputValues.purchasePrice - 1) * inputValues.leverage + 1) * inputValues.homelyDownPayment;
+            return (value / inputValues.purchasePrice* inputValues.homelyDownPayment)*inputValues.leverage;
         });
 
-        const buyerStakeValue = houseValue.map(value => value - homelyStakeValue[houseValue.indexOf(value)] - principalLeft[houseValue.indexOf(value)]);
+
+        const buyerStakeValue = houseValue.map((value, index) => {
+            return value - homelyStakeValue[index]-principalLeft[index];
+        }
+        );
 
 
-        const homelyStakeValueSliced = homelyStakeValue.slice(0, N);
-        const buyerStakeValueSliced = buyerStakeValue.slice(0, N);
-        const principalLeftSliced = principalLeft.slice(0, N);
-        const interestLeftSliced = interestLeft.slice(0, N);
 
         let options = createHouseValueEquity(
-            homelyStakeValueSliced,
-            buyerStakeValueSliced,
-            principalLeftSliced,
-            interestLeftSliced)
+            homelyStakeValue,
+            buyerStakeValue,
+            principalLeft)
 
-        console.log(options)
+        console.log(homelyStakeValue,
+            buyerStakeValue,
+            principalLeft)
+
 
         let chartContainer = document.getElementById('chartContainerEquity');
 
@@ -193,20 +185,18 @@ document.addEventListener('DOMContentLoaded', () => {
             chartHouseEquity.updateSeries([
                 {
                     name: 'Homely',
-                    data: homelyStakeValueSliced
+                    data: homelyStakeValue,
+                    color: '#339966'
                 },
                 {
                     name: 'Buyer',
-                    data: buyerStakeValueSliced
+                    data: buyerStakeValue
                 },
                 {
                     name: 'Bank',
-                    data: principalLeftSliced
-                },
-                {
-                    name: 'Interest',
-                    data: interestLeftSliced
-                },
+                    data: principalLeft
+                }
+
             ]);
         } else {
             // Initialize the chart for the first time
@@ -235,11 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('sellingPrice').addEventListener('input', updateAll);
     document.getElementById('buyoutDuration').addEventListener('input', updateAll);
     document.getElementById('buyerDownPayment').addEventListener('input', updateAll);
-    document.getElementById('interestRate').addEventListener('input', updateAll);
     document.getElementById('loanDuration').addEventListener('input', updateAll);
-    document.getElementById('notaryCosts').addEventListener('input', updateAll);
     document.getElementById('homelyDownPayment').addEventListener('input', updateAll);
-    document.getElementById('leverage').addEventListener('input', updateAll);
 
     // Initial calculation
     updateAll();

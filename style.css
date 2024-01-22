@@ -2,8 +2,6 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #6d7e93;
-    margin: 0;
-    padding: 20px;
     color: #333;
 }
 
@@ -76,19 +74,33 @@ label {
     max-width: 35%;
 }
 
-.column {
-    float: left;
-    width: 30vw;
-    height: 100vw;
+.flexblock {
+    display: flex;
+    height: 97vh;
+    width: 97vw;
+    overflow: scroll;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    flex-direction: column;
+    padding: 5px;
+    justify-content: stretch;
 }
 
 .block-container {
-    max-width: 100%;
-    margin: 10px;
-    padding: 20px;
+    min-width: 300px;
+    display: flex;
+    margin: 0px;
+    padding: 10px;
+}
+
+.block-background {
+    
+    width: 100%;
     background-color: white;
+    padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.22);
+    
 }
 
 .group-container {
